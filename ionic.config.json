@@ -1,0 +1,7 @@
+{
+  "name": "UserEnd_new",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
