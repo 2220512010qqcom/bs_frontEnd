@@ -7,13 +7,13 @@
     </ion-header>
     <ion-content :fullscreen="true" class="custom-content">
       <div class="centered-content">
-        <ion-card style="width: 100vw; max-width: 100vw;">
-          <ion-card-content class="centered-content">
-            <ion-item class="custom-input-item" style="margin-bottom: 20px;">
-            <ion-label position="stacked">邮箱</ion-label>
-            <ion-input v-model="email" type="email"></ion-input>
-            <ion-label position="stacked">密码</ion-label>
-            <ion-input v-model="password" type="password"></ion-input>
+        <ion-card style="width: 100vw; max-width: 100vw; box-shadow: none;">
+          <ion-card-content class="centered-content" style="box-shadow: none;">
+            <ion-item class="custom-input-item" style="margin-bottom: 20px; box-shadow: none;">
+              <ion-label position="stacked">邮箱</ion-label>
+              <ion-input v-model="email" type="email"></ion-input>
+              <ion-label position="stacked">密码</ion-label>
+              <ion-input v-model="password" type="password"></ion-input>
             </ion-item>
             <ion-button expand="full" class="custom-login-button" @click="handleLogin">登录</ion-button>
             <router-link to="/signup">没有账号？点击注册</router-link>
