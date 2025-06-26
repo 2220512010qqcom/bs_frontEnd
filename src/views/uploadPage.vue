@@ -1,6 +1,5 @@
 <template>
-  <ion-page>
-    <ion-content>
+
       <ion-card class="upload-page">
         <ion-card-header>
           <ion-card-title>健康数据上传</ion-card-title>
@@ -27,24 +26,19 @@
           </form>
         </ion-card-content>
       </ion-card>
-    </ion-content>
-  </ion-page>
 </template>
 <script setup lang="ts">
 import { reactive, onMounted } from 'vue';
 import { useUserStore } from '@/stores/userInfo';
-import { IonPage, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonText } from '@ionic/vue';
+import { 
+   IonCard, IonCardHeader, IonCardTitle, IonCardContent, 
+  IonItem, IonLabel, IonInput, IonButton, IonText 
+} from '@ionic/vue';
 import router from '@/router';
+import { UserUploads } from '../api/types/upload'
+import { upload } from '../api/upload/upload'
 const userStore = useUserStore();
 
-
-
-interface UserUploads {
-  user_id: string;
-  heart_rate: number | null;
-  blood_pressure: string;
-  oxygen_saturation: number | null;
-}
 
 const userUploads = reactive<UserUploads>({
   user_id: '1',
@@ -52,10 +46,6 @@ const userUploads = reactive<UserUploads>({
   blood_pressure: '',
   oxygen_saturation: null,
 });
-
-const fetchUsers = () => {
-  // Fetch users from user_uploads table (mocked here)
-};
 
 const submitData = () => {
   if(!userStore.userLogin || !userStore.userLogin.user_id) {
@@ -67,25 +57,16 @@ const submitData = () => {
     alert('请填写所有必填字段');
     return;
   }
-  userUploads.user_id = userStore.userLogin.user_id; // Set user_id from the store
-  // Handle form submission (mocked here)
-  console.log('Form data:', userUploads);
-  // alert('数据上传成功');
-  // fetch('http://123.57.78.6:3000/upload', {  // 修改服务器地址
-  fetch('https://aiql.cloud/upload', {  // 修改服务器地址
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(userUploads)
-  })
-    .then(response => response.json())
-    .then(data => {
+  userUploads.user_id = userStore.userLogin.user_id; 
+console.log('准备上传的数据:', userUploads);
+  upload(userUploads)
+    .then(response => {
+      const data = response.data;
       if (data.message === 'Upload recorded successfully') {
         alert('数据上传成功');
-        router.push('/tabs/tab1');
-      } else {
-        alert('数据上传失败: ' + data.message);
+        userUploads.heart_rate = null;
+        userUploads.blood_pressure = '';
+        userUploads.oxygen_saturation = null;
       }
     })
     .catch(error => {
@@ -100,7 +81,6 @@ onMounted(() => {
     router.push('/login');
     return;
   }
-  fetchUsers();
 });
 </script>
 

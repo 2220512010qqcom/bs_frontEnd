@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia';
 
-interface UserAvatar {
+export interface UserAvatar {
     user_id: string;
     avatar_url: string;
     // created_at: Date;
     // updated_at: Date;
 }
 
-interface UserBasicAttributes {
+export interface UserBasicAttributes {
     user_id: string;
     gender: string;
     birth_date: Date;
@@ -16,7 +16,7 @@ interface UserBasicAttributes {
     user_name: string;
 }
 
-interface UserLogin {
+export interface UserLogin {
     user_id: string;
     user_name: string;
     user_password: string;
@@ -25,14 +25,14 @@ interface UserLogin {
     user_email: string;
 }
 
-interface UserStatistics {
+export interface UserStatistics {
     user_id: string;
     last_login_date: Date;
     region: string;
     last_upload_date: Date;
 }
 
-interface UserUploads {
+export interface UserUploads {
     upload_id: string;
     user_id: string;
     heart_rate: number;
@@ -41,7 +41,7 @@ interface UserUploads {
     upload_time: Date;
 }
 
-interface UserComments {
+export interface UserComments {
     comment_id: string;
     user_id: string;
     content: string;
@@ -54,7 +54,7 @@ interface UserComments {
     replies_count: number;
 }
 
-interface UserFeedback {
+export interface UserFeedback {
     feedback_id: string;
     user_id: string;
     content: string;
@@ -66,7 +66,7 @@ interface UserFeedback {
     status: string;
 }
 
-interface UserAnalyse {
+export interface UserAnalyse {
     riskIndex: string;
     riskLevel: string;
 }
@@ -102,6 +102,9 @@ export const useUserStore = defineStore('user', {
         },
         setUserFeedback(data: UserFeedback[]) {
             this.userFeedback = data;
+        },
+        setUserAnalyse(data: UserAnalyse) {
+            this.userAnalyse = data;
         },
     },
 });

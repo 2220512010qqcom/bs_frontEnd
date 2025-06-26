@@ -1,21 +1,45 @@
 <template>
   <div class="chart-container">
-    <div class="chart-wrapper">
-      <canvas ref="chartCanvas"></canvas>
-    </div>
-    <div class="chart-wrapper">
-      <canvas ref="chartCanvas2"></canvas>
-    </div>
-    <div class="chart-wrapper">
-      <canvas ref="chartCanvas3"></canvas>
-    </div>
+    <swiper
+      ref="swiperRef"
+      :initial-slide="currentChart"
+      :speed="400"
+      :slides-per-view="1"
+      :active-index="currentChart"
+      :centeredSlides="true"
+      class="my-swiper"
+      :loop="slideCount > 1"
+      style="width: 100vw;"
+    >
+      <swiper-slide>
+        <div class="chart-wrapper">
+          <canvas ref="chartCanvas"></canvas>
+        </div>
+      </swiper-slide>
+      <swiper-slide>
+        <div class="chart-wrapper">
+          <canvas ref="chartCanvas1"></canvas>
+        </div>
+      </swiper-slide>
+      <swiper-slide>
+        <div class="chart-wrapper">
+          <canvas ref="chartCanvas2"></canvas>
+        </div>
+      </swiper-slide>
+      <swiper-slide>
+        <div class="chart-wrapper">
+          <canvas ref="chartCanvas3"></canvas>
+        </div>
+      </swiper-slide>
+    </swiper>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import Chart, { ChartData, Point } from 'chart.js/auto';
-
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/swiper-bundle.css';
 interface UserUploads {
     upload_id: string;
     user_id: string;
@@ -30,92 +54,151 @@ const props = defineProps<{
 }>();
 
 const chartCanvas = ref<HTMLCanvasElement | null>(null);
+const chartCanvas1 = ref<HTMLCanvasElement | null>(null);
 const chartCanvas2 = ref<HTMLCanvasElement | null>(null);
 const chartCanvas3 = ref<HTMLCanvasElement | null>(null);
+const currentChart = ref(0);
+const swiperRef = ref<any>(null);
+const slideCount = 4;
 
-const data_blood_pressure: ChartData<'line', (number | Point | null)[], unknown> = {
-  labels: props.data.map((item) => new Date(item.upload_time).toLocaleDateString()),
-  datasets: [{
-    label: 'Blood Pressure',
-    data: props.data.map((item) => Number(item.blood_pressure)),
-    borderColor: 'rgb(75, 192, 192)',
-    tension: 0.1
-  }]
-};
-const data_heart_rate: ChartData<'line', (number | Point | null)[], unknown> = {
-  labels: props.data.map((item) => new Date(item.upload_time).toLocaleDateString()),
-  datasets: [{
-    label: 'Heart Rate',
-    data: props.data.map((item) => Number(item.heart_rate)),
-    borderColor: 'rgb(255, 99, 132)',
-    tension: 0.1
-  }]
-};
-const data_oxygen_saturation: ChartData<'line', (number | Point | null)[], unknown> = {
-  labels: props.data.map((item) => new Date(item.upload_time).toLocaleDateString()),
-  datasets: [{
-    label: 'Oxygen Saturation',
-    data: props.data.map((item) => Number(item.oxygen_saturation)),
-    borderColor: 'rgb(54, 162, 235)',
-    tension: 0.1
-  }]
-};
-onMounted(() => {
-  if (chartCanvas.value) {
-    new Chart(chartCanvas.value, {
-      type: 'line',
-      data: data_blood_pressure,
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          title: {
-            display: true,
-            text: '血压图表',
-          },
-        },
+
+const data =  computed(() => {
+  return{
+    labels: props.data.map((item) => new Date(item.upload_time).toLocaleDateString()),
+    datasets: [
+      {
+        label: '血压',
+        data: props.data.map((item) => Number(item.blood_pressure)),
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1,
       },
-    });
-  }
-  if (chartCanvas2.value) {
-    new Chart(chartCanvas2.value, {
-      type: 'line',
-      data: data_heart_rate,
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          title: {
-            display: true,
-            text: '心率图表',
-          },
-        },
+      {
+        label: '心率',
+        data: props.data.map((item) => Number(item.heart_rate)),
+        borderColor: 'rgb(255, 99, 132)',
+        tension: 0.1,
       },
-    });
-  }
-  if (chartCanvas3.value) {
-    new Chart(chartCanvas3.value, {
-      type: 'line',
-      data: data_oxygen_saturation,
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          title: {
-            display: true,
-            text: '血氧图表',
-          },
-        },
+      {
+        label: '血氧',
+        data: props.data.map((item) => Number(item.oxygen_saturation)),
+        borderColor: 'rgb(54, 162, 235)',
+        tension: 0.1,
       },
-    });
+    ],
   }
+  
 });
+const data_blood_pressure = computed(() => ({
+  labels: props.data.map((item) => new Date(item.upload_time).toLocaleDateString()),
+  datasets: [
+    {
+      label: '血压',
+      data: props.data.map((item) => Number(item.blood_pressure)),
+      borderColor: 'rgb(75, 192, 192)',
+      tension: 0.1,
+    },
+  ],
+}));
+
+const data_heart_rate = computed(() => ({
+  labels: props.data.map((item) => new Date(item.upload_time).toLocaleDateString()),
+  datasets: [
+    {
+      label: '心率',
+      data: props.data.map((item) => Number(item.heart_rate)),
+      borderColor: 'rgb(255, 99, 132)',
+      tension: 0.1,
+    },
+  ],
+}));
+
+const data_oxygen_saturation = computed(() => ({
+  labels: props.data.map((item) => new Date(item.upload_time).toLocaleDateString()),
+  datasets: [
+    {
+      label: '血氧',
+      data: props.data.map((item) => Number(item.oxygen_saturation)),
+      borderColor: 'rgb(54, 162, 235)',
+      tension: 0.1,
+    },
+  ],
+}));
+const chartInstances = [ref<Chart|null>(null), ref<Chart|null>(null), ref<Chart|null>(null), ref<Chart|null>(null)];
+
+function renderCharts() {
+  // 综合图表
+  if (chartCanvas.value) {
+    if (chartInstances[0].value) chartInstances[0].value.destroy();
+    chartInstances[0].value = new Chart(chartCanvas.value, {
+      type: 'line',
+      data: data.value,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+          title: { display: true, text: '综合图表' },
+        },
+      },
+    });
+  }
+  // 血压图表
+  if (chartCanvas1.value) {
+    if (chartInstances[1].value) chartInstances[1].value.destroy();
+    chartInstances[1].value = new Chart(chartCanvas1.value, {
+      type: 'line',
+      data: data_blood_pressure.value,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+          title: { display: true, text: '血压图表' },
+        },
+      },
+    });
+  }
+  // 心率图表
+  if (chartCanvas2.value) {
+    if (chartInstances[2].value) chartInstances[2].value.destroy();
+    chartInstances[2].value = new Chart(chartCanvas2.value, {
+      type: 'line',
+      data: data_heart_rate.value,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+          title: { display: true, text: '心率图表' },
+        },
+      },
+    });
+  }
+  // 血氧图表
+  if (chartCanvas3.value) {
+    if (chartInstances[3].value) chartInstances[3].value.destroy();
+    chartInstances[3].value = new Chart(chartCanvas3.value, {
+      type: 'line',
+      data: data_oxygen_saturation.value,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+          title: { display: true, text: '血氧图表' },
+        },
+      },
+    });
+  }
+}
+
+onMounted(() => {
+  renderCharts();
+});
+
+watch(
+  () => props.data,
+  () => {
+    renderCharts();
+  },
+  { deep: true }
+);
 </script>
 
 <style scoped>
@@ -131,7 +214,7 @@ onMounted(() => {
 }
 
 .chart-wrapper {
-  width: 100%;
+  width: 100vw;
   max-width: 800px;
   background: #fff;
   padding: 20px;

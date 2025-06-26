@@ -2,19 +2,11 @@ import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import TabsPage from '../views/TabsPage.vue'
 import LoginPage from '../views/LoginPage.vue'
-import feedbackPage from '../views/feedbackPage.vue';
-import getFeedbackPage from '../views/getFeedbackPage.vue';
 import historyPage from '../views/historyPage.vue';
-import ChartPage from '../views/ChartPage.vue' ;
 import signup from '../views/signup.vue'; 
 import uploadPage from '../views/uploadPage.vue';
-import setPage from '@/views/setPage.vue';
-import setAvator from '@/views/setAvator.vue';
-import testAvatar from '../components/HeaderBarTest.vue'
-import profile from '../views/profile.vue';
-import setProfile from '../views/setProfile.vue';
-import PostPage from '../views/PostPage.vue';
-import createPost from '../views/CreatePost.vue';
+import { shouldFetchUserStoreAnalyzeIndex, shouldFetchUserStoreRecords, getUserStoreAnalyzeIndex,getUserStoreRecords  } from '../api/analyze/analyze'
+import { shouldLogin } from '../api/login/login';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -22,39 +14,8 @@ const routes: Array<RouteRecordRaw> = [
     redirect: '/tabs/tab1'
   },
   {
-    path: '/test',
-    component:testAvatar,
-  },
-  {
-    path: '/setProfile',
-    component:setProfile,
-  },
-  {
-    path: '/post/:id',
-    name: 'PostPage',
-    component: PostPage,
-    // props: true,
-  },
-  {
-    path: '/createPost',
-    name: 'createPost',
-    component: createPost,
-  },
-  {
-    path: '/profile',
-    component: profile,
-  },
-  {
-    path: '/setting',
-    component:setPage,
-  },
-  {
     path: '/login',
     component: LoginPage,
-  },
-  {
-    path: '/setAvator',
-    component: setAvator,
   },
   {
     path: '/upload',
@@ -65,20 +26,8 @@ const routes: Array<RouteRecordRaw> = [
     component: signup
   },
   {
-    path: '/chart',
-    component: ChartPage
-  },
-  {
     path: '/history',
     component: historyPage
-  },
-  {
-    path: '/feedback',
-    component: feedbackPage,
-  },
-  {
-    path: '/getFeedback',
-    component: getFeedbackPage,
   },
   {
     path: '/tabs/',
@@ -95,7 +44,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'tab2',
         // component: () => import('@/views/Tab2Page.vue'),
-        component: () => import('@/views/ForumPage.vue'),
+        component: () => import('@/views/Tab2Page.vue'),
       },
       {
         path: 'tab3',
@@ -109,5 +58,28 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  // 检查是否需要登录
+  if (to.path !== '/login' && to.path !== '/signup' && shouldLogin()) {
+    next('/login');
+    return;
+  }
+  // 检查是否需要获取用户分析数据
+  if (shouldFetchUserStoreAnalyzeIndex()) {
+    getUserStoreAnalyzeIndex();
+  }
+
+  // 检查是否需要获取用户上传记录
+  if (shouldFetchUserStoreRecords()) {
+     // 获取用户上传记录
+    getUserStoreRecords();
+  }
+
+  next();
+
+  
+});
+
 
 export default router

@@ -14,7 +14,6 @@ service.interceptors.request.use(
         // 在发送请求之前做些什么
         // 可以在这里添加认证 token 等
         const token = localStorage.getItem("token");
-        console.log("拦截器调用成功");
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -30,14 +29,12 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     (response) => {
         // 对响应数据做点什么
-        console.log("响应拦截器调用成功");
-        return response.data;
+        return response;
     },
     (error) => {
         // 对响应错误做点什么
         if (error.response) {
             // 请求已发出，但服务器响应状态码不在 2xx 范围内
-            console.log("拦截器响应错误调用成功");
             console.error("Response error:", error.response.data);
             alert(`Error: ${error.response.data.message || "请求失败"}`);
         } else {
