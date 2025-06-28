@@ -12,7 +12,7 @@ import { useUserStore , UserAnalyse } from '@/stores/userInfo';
 export function login(user_email: string, user_password: string) {
     return request({
         url: '/login',
-        method: 'post',
+        method: 'POST',
         data: {
             user_email,
             user_password,
@@ -44,7 +44,7 @@ export function signup(
 ) {
     return request({
         url: '/signup',
-        method: 'post',
+        method: 'POST',
         data: {
             user_name,
             user_password,

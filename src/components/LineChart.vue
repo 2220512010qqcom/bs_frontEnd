@@ -44,7 +44,7 @@ interface UserUploads {
     upload_id: string;
     user_id: string;
     heart_rate: number;
-    blood_pressure: string;
+    blood_pressure: string | number; // 血压可以是字符串格式如 '120/80'
     oxygen_saturation: number;
     upload_time: Date;
 }

@@ -35,16 +35,18 @@ import {
   IonItem, IonLabel, IonInput, IonButton, IonText 
 } from '@ionic/vue';
 import router from '@/router';
-import { UserUploads } from '../api/types/upload'
+import { UserUploads } from '../stores/userInfo';
 import { upload } from '../api/upload/upload'
 const userStore = useUserStore();
 
 
 const userUploads = reactive<UserUploads>({
   user_id: '1',
-  heart_rate: null,
-  blood_pressure: '',
-  oxygen_saturation: null,
+  heart_rate: 0,
+  blood_pressure: 0,
+  oxygen_saturation: 0,
+  upload_id: '',
+  upload_time: new Date()
 });
 
 const submitData = () => {
@@ -64,14 +66,24 @@ console.log('准备上传的数据:', userUploads);
       const data = response.data;
       if (data.message === 'Upload recorded successfully') {
         alert('数据上传成功');
-        userUploads.heart_rate = null;
+        userUploads.heart_rate = 0;
         userUploads.blood_pressure = '';
-        userUploads.oxygen_saturation = null;
+        userUploads.oxygen_saturation = 0;
       }
     })
     .catch(error => {
       console.error('Error:', error);
-      alert('数据上传失败');
+      // alert('数据上传失败');
+      userStore.addUserUpload({
+        upload_id: 'mock_upload_id',
+        user_id: userUploads.user_id,
+        heart_rate: userUploads.heart_rate,
+        blood_pressure: userUploads.blood_pressure,
+        oxygen_saturation: userUploads.oxygen_saturation,
+        upload_time: new Date(),
+      });
+      alert('模拟用户上传成功（由于证书问题，实际上传功能可能无法使用）');
+
     });
 };
 

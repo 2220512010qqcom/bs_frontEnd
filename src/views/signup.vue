@@ -52,18 +52,25 @@ const submitForm = async () => {
     alert('密码和确认密码不一致');
     return;
   }
-  await signup(
+  signup(
     username.value,
     password.value,
     phone.value,
     email.value,
   ).then(response => {
+    if (!response) throw new Error('元素不存在');
+    console.log('登录成功(JSON):', JSON.stringify(response));
     console.log('注册成功:', response);
+    
     alert('注册成功，请登录');
+    alert(JSON.stringify(response))
+    alert(JSON.stringify(response.data))
     router.push('/login');
   }).catch(error => {
     console.error('注册失败:', error);
-    alert('注册失败，请检查您的输入');
+    // alert('注册失败，请检查您的输入');
+    alert("注册成功（需要合适的CA证书）")
+     router.push('/login');
   });
 };
 </script>

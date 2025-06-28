@@ -1,5 +1,5 @@
 import request from '../utils/request';
-import { UserUploads } from '../types/upload'
+import { UserUploads } from '../../stores/userInfo';
 
 /**
  * 上传用户记录的接口函数。
@@ -13,7 +13,7 @@ export function upload(userUploads: UserUploads) {
     }
     return request({
         url: '/upload',
-        method: 'post',
+        method: 'POST',
         data: params
     });
 }
@@ -32,7 +32,7 @@ export function deleteUpload(upload_id: string, user_id: string) {
     }
     return request({
         url: `/deleteUpload/${user_id}/${upload_id}`,
-        method: 'delete',
+        method: 'DELETE',
         data: params
     });
 }

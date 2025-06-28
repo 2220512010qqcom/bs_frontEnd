@@ -44,8 +44,7 @@
 <script lang="ts" setup>
 import { 
   IonPage, IonHeader, IonContent, IonTitle,
-  IonToolbar, IonList, IonItemGroup, IonItem, IonLabel, 
-  IonText, IonAvatar , IonImg, onIonViewWillEnter 
+  IonToolbar, IonList, IonItemGroup, IonItem, IonLabel, IonText
 } from '@ionic/vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/userInfo';

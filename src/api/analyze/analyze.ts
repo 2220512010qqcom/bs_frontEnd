@@ -13,7 +13,7 @@ import { shouldLogin } from '../login/login';
 export function getAnalyzeIndex(user_id : string) {
     return request({
         url: `/analyze/${user_id}`,
-        method: 'get'
+        method: 'GET'
     });
 }
 
@@ -28,7 +28,7 @@ export function getAnalyzeIndex(user_id : string) {
 export function getRecords(user_id: string) {
     return request({
         url: `/getRecord/${user_id}`,
-        method: 'get'
+        method: 'GET'
     });
 }
 
@@ -81,9 +81,11 @@ export function getUserStoreAnalyzeIndex(){
             riskIndex: response.data.riskIndex,
             riskLevel: response.data.riskLevel
         };
-        userStore.setUserAnalyse(
-            IndexData.value as UserAnalyse
-        );
+        if (IndexData.value) {
+            userStore.setUserAnalyse(
+                IndexData.value as UserAnalyse
+            );
+        }
     }).catch((error) => {
         console.error('Error fetching analyze data:', error);
     });
@@ -105,7 +107,9 @@ export function getUserStoreRecords() {
     }
     const userStore = useUserStore();
     getRecords(userStore.userLogin.user_id).then((response) => {
-        userStore.setUserUploads(response.data);
+        if (response.data) {
+            userStore.setUserUploads(response.data);
+        }
     }).catch((error) => {
         console.error('Error fetching history data:', error);
     });
