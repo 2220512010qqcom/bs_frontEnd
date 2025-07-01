@@ -53,10 +53,6 @@ const handleLogin = async () => {
   // 获取用户上传数据
   await reloadUserUploadToUserstore()
   await reloadRiskIndexToUserstore()
-  // const uploads = await getUserUploads(result.user_id);
-  // alert(JSON.stringify(uploads))
-  // userStore.setUserUploads(uploads);
-  // console.log("result is ",result);
   router.push('/tabs/tab1');
 };
 </script>
