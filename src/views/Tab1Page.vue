@@ -33,6 +33,7 @@ import {
 import { useUserStore } from '@/stores/userInfo';
 import uploadComponent from './uploadPage.vue'
 import FileUpload from '@/components/FileUpload.vue';
+import { addUserUpload } from '@/api/databaseAPI/API';
 const userStore = useUserStore();
 const router = useRouter();
 

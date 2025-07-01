@@ -16,7 +16,7 @@
             </ion-item>
             <ion-item>
               <ion-label position="stacked">血压</ion-label>
-              <ion-input type="text" v-model="userUploads.blood_pressure" required></ion-input>
+              <ion-input type="number" v-model="userUploads.blood_pressure" required></ion-input>
             </ion-item>
             <ion-item>
               <ion-label position="stacked">血氧饱和度</ion-label>
@@ -36,17 +36,17 @@ import {
 } from '@ionic/vue';
 import router from '@/router';
 import { UserUploads } from '../stores/userInfo';
-import { upload } from '../api/upload/upload'
+import { addUserUpload, alreadyLogin } from '@/api/databaseAPI/API'; 
 const userStore = useUserStore();
 
 
 const userUploads = reactive<UserUploads>({
-  user_id: '1',
+  user_id: 1,
   heart_rate: 0,
   blood_pressure: 0,
   oxygen_saturation: 0,
-  upload_id: '',
-  upload_time: new Date()
+  upload_id: 0,
+  upload_date: new Date().toISOString()
 });
 
 const submitData = () => {
@@ -61,34 +61,25 @@ const submitData = () => {
   }
   userUploads.user_id = userStore.userLogin.user_id; 
 console.log('准备上传的数据:', userUploads);
-  upload(userUploads)
-    .then(response => {
-      const data = response.data;
-      if (data.message === 'Upload recorded successfully') {
-        alert('数据上传成功');
-        userUploads.heart_rate = 0;
-        userUploads.blood_pressure = '';
-        userUploads.oxygen_saturation = 0;
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      // alert('数据上传失败');
-      userStore.addUserUpload({
-        upload_id: 'mock_upload_id',
-        user_id: userUploads.user_id,
-        heart_rate: userUploads.heart_rate,
-        blood_pressure: userUploads.blood_pressure,
-        oxygen_saturation: userUploads.oxygen_saturation,
-        upload_time: new Date(),
-      });
-      alert('模拟用户上传成功（由于证书问题，实际上传功能可能无法使用）');
-
-    });
+  addUserUpload(
+    userUploads.user_id,
+    userUploads.heart_rate,
+    userUploads.blood_pressure,
+    userUploads.oxygen_saturation
+  )
+  .then(() => {
+    alert('上传成功');
+    userUploads.heart_rate = 0;
+    userUploads.blood_pressure = 0;
+    userUploads.oxygen_saturation = 0;
+  })
+  .catch((error: any) => {
+    alert('上传失败: ' + error);
+  });
 };
 
 onMounted(() => {
-  if(userStore.userLogin.user_id === undefined || userStore.userLogin.user_id === "") {
+  if(!alreadyLogin()) {
     alert("请先登录，点击确认前往登录界面");
     router.push('/login');
     return;

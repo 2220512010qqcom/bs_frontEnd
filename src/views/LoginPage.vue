@@ -10,8 +10,8 @@
         <ion-card style="width: 100vw; max-width: 100vw; box-shadow: none;">
           <ion-card-content class="centered-content" style="box-shadow: none;">
             <ion-item class="custom-input-item" style="margin-bottom: 20px; box-shadow: none;">
-              <ion-label position="stacked">邮箱</ion-label>
-              <ion-input v-model="email" type="email"></ion-input>
+                <ion-label position="stacked">手机号码</ion-label>
+                <ion-input v-model="phone" type="tel" inputmode="tel" placeholder="请输入手机号码"></ion-input>
               <ion-label position="stacked">密码</ion-label>
               <ion-input v-model="password" type="password"></ion-input>
             </ion-item>
@@ -33,31 +33,31 @@ import {
 } from '@ionic/vue';
 import { useUserStore  } from '@/stores/userInfo';
 import { useRouter } from 'vue-router';
-import { login } from '../api/login/login.js';
+import { login , getUserUploads, reloadUserUploadToUserstore, reloadRiskIndexToUserstore } from '../api/databaseAPI/API';
 
 const router = useRouter();
-const email = ref('');
+const phone = ref('');
 const password = ref('');
 const userStore = useUserStore();
 
-const handleLogin = () => {
-  login(email.value, password.value)
-  .then(response => {
-    userStore.setUserLogin({
-      user_id: response.data.user.user_id ? response.data.user.user_id : '62',
-    });
-    userStore.initAll()
-    alert('登录成功');
-    router.push('/tabs/tab1');
+const handleLogin = async () => {
+  const result = await login(phone.value, password.value);
+  if (!result || !result.user_id) {
+    alert('登录失败，请检查手机号码和密码是否正确');
+    return;
+  }
+  // 登录成功，设置用户信息
+  userStore.setUserLogin({
+    user_id: result.user_id
   })
-  .catch(error => {
-    console.error("Login failed:", error);
-    alert("登录成功 （需要合适的CA证书）")
-    // alert('登录失败，请检查您的邮箱和密码。');
-    // 初始化用户信息(由于证书原因目前是假数据用于展示)
-    userStore.initAll()
-    router.push('/tabs/tab1');
-  });
+  // 获取用户上传数据
+  await reloadUserUploadToUserstore()
+  await reloadRiskIndexToUserstore()
+  // const uploads = await getUserUploads(result.user_id);
+  // alert(JSON.stringify(uploads))
+  // userStore.setUserUploads(uploads);
+  // console.log("result is ",result);
+  router.push('/tabs/tab1');
 };
 </script>
 <style scoped>

@@ -39,15 +39,8 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import Chart, { ChartData, Point } from 'chart.js/auto';
 import { Swiper, SwiperSlide } from 'swiper/vue';
+import { UserUploads } from '../stores/userInfo';
 import 'swiper/swiper-bundle.css';
-interface UserUploads {
-    upload_id: string;
-    user_id: string;
-    heart_rate: number;
-    blood_pressure: string | number; // 血压可以是字符串格式如 '120/80'
-    oxygen_saturation: number;
-    upload_time: Date;
-}
 
 const props = defineProps<{
   data: UserUploads[];
@@ -61,10 +54,28 @@ const currentChart = ref(0);
 const swiperRef = ref<any>(null);
 const slideCount = 4;
 
+// ISO 8601 日期格式处理
+function formatDate(isoString: string) {
+  if (!isoString) {
+    return '';
+  }
+  
+  // 尝试解析日期
+  const date = new Date(isoString);
+  if (isNaN(date.getTime())) {
+    return '';
+  }
+  // 格式化为 yyyy-MM-dd
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  
+  return `${year}-${month}-${day}`;
+}
 
 const data =  computed(() => {
   return{
-    labels: props.data.map((item) => new Date(item.upload_time).toLocaleDateString()),
+    labels: props.data.map((item) => formatDate(item.upload_date)),
     datasets: [
       {
         label: '血压',
@@ -89,7 +100,7 @@ const data =  computed(() => {
   
 });
 const data_blood_pressure = computed(() => ({
-  labels: props.data.map((item) => new Date(item.upload_time).toLocaleDateString()),
+  labels: props.data.map((item) => formatDate(item.upload_date)),
   datasets: [
     {
       label: '血压',
@@ -101,7 +112,7 @@ const data_blood_pressure = computed(() => ({
 }));
 
 const data_heart_rate = computed(() => ({
-  labels: props.data.map((item) => new Date(item.upload_time).toLocaleDateString()),
+  labels: props.data.map((item) => formatDate(item.upload_date)),
   datasets: [
     {
       label: '心率',
@@ -113,7 +124,7 @@ const data_heart_rate = computed(() => ({
 }));
 
 const data_oxygen_saturation = computed(() => ({
-  labels: props.data.map((item) => new Date(item.upload_time).toLocaleDateString()),
+  labels: props.data.map((item) => formatDate(item.upload_date)),
   datasets: [
     {
       label: '血氧',

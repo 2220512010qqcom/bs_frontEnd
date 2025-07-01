@@ -31,14 +31,14 @@ import {
   IonButtons, IonButton,
   IonContent, IonGrid, IonRow, IonCol } from '@ionic/vue';
 import LineChart from '../components/LineChart.vue';
-import { getUserStoreAnalyzeIndex, getUserStoreRecords } from '../api/analyze/analyze';
 import IndexComponent from '../components/IndexText.vue'
 import { useUserStore ,  UserUploads } from '@/stores/userInfo';
+import { reloadUserUploadToUserstore, reloadRiskIndexToUserstore } from '@/api/databaseAPI/API';
 const userStore = useUserStore();
 const chartData = ref<UserUploads[]>(userStore.userUploads);
 const refresh = () => {
-  getUserStoreAnalyzeIndex();
-  getUserStoreRecords();
+  reloadRiskIndexToUserstore();
+  reloadUserUploadToUserstore();
   chartData.value = userStore.userUploads;
 };
 </script>

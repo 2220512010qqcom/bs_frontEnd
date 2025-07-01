@@ -8,16 +8,8 @@
     <ion-content>
       <form @submit.prevent="submitForm">
         <ion-item>
-          <ion-label position="stacked">姓名</ion-label>
-          <ion-input v-model="username" type="text"></ion-input>
-        </ion-item>
-        <ion-item>
           <ion-label position="stacked">手机号码</ion-label>
           <ion-input v-model="phone" type="tel"></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label position="stacked">邮箱</ion-label>
-          <ion-input v-model="email" type="email"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="stacked">密码</ion-label>
@@ -37,7 +29,7 @@
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonInput, IonButton } from '@ionic/vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { signup } from '../api/login/login';
+import { register } from '../api/databaseAPI/API';
 
 const router = useRouter();
 
@@ -52,25 +44,12 @@ const submitForm = async () => {
     alert('密码和确认密码不一致');
     return;
   }
-  signup(
-    username.value,
-    password.value,
-    phone.value,
-    email.value,
-  ).then(response => {
-    if (!response) throw new Error('元素不存在');
-    console.log('登录成功(JSON):', JSON.stringify(response));
-    console.log('注册成功:', response);
-    
-    alert('注册成功，请登录');
-    alert(JSON.stringify(response))
-    alert(JSON.stringify(response.data))
+  const result = await register(phone.value, password.value);
+  if(result != null) {
+    alert('注册成功');
     router.push('/login');
-  }).catch(error => {
-    console.error('注册失败:', error);
-    // alert('注册失败，请检查您的输入');
-    alert("注册成功（需要合适的CA证书）")
-     router.push('/login');
-  });
+  } else {
+    alert('注册失败，请稍后再试');
+  }
 };
 </script>

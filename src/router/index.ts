@@ -5,8 +5,8 @@ import LoginPage from '../views/LoginPage.vue'
 import historyPage from '../views/historyPage.vue';
 import signup from '../views/signup.vue'; 
 import uploadPage from '../views/uploadPage.vue';
-import { shouldFetchUserStoreAnalyzeIndex, shouldFetchUserStoreRecords, getUserStoreAnalyzeIndex,getUserStoreRecords  } from '../api/analyze/analyze'
-import { shouldLogin } from '../api/login/login';
+// import { shouldFetchUserStoreAnalyzeIndex, shouldFetchUserStoreRecords, getUserStoreAnalyzeIndex,getUserStoreRecords  } from '../api/analyze/analyze'
+import { alreadyLogin } from '../api/databaseAPI/API';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -61,24 +61,11 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   // 检查是否需要登录
-  if (to.path !== '/login' && to.path !== '/signup' && shouldLogin()) {
+  if (to.path !== '/login' && to.path !== '/signup' && !alreadyLogin()) {
     next('/login');
     return;
   }
-  // 检查是否需要获取用户分析数据
-  if (shouldFetchUserStoreAnalyzeIndex()) {
-    getUserStoreAnalyzeIndex();
-  }
-
-  // 检查是否需要获取用户上传记录
-  if (shouldFetchUserStoreRecords()) {
-     // 获取用户上传记录
-    getUserStoreRecords();
-  }
-
   next();
-
-  
 });
 
 
